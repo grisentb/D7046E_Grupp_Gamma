@@ -46,33 +46,33 @@ def preprocess_pandas(data, columns):
     return data
 
 # If this is the primary file that is executed (ie not an import of another file)
-if __name__ == "__main__":
-    # Get data, pre-process and split
-    data = pd.read_csv("sample_data/amazon_cells_labelled.txt", delimiter='\t', header=None)
-    data.columns = ['Sentence', 'Class']
-    data['index'] = data.index                                          # Add new column index
-    columns = ['index', 'Class', 'Sentence']
-    data = preprocess_pandas(data, columns)                             # Pre-process
-    training_data, validation_data, training_labels, validation_labels = train_test_split( # split the data into training, validation, and test splits
-        data['Sentence'].values.astype('U'),
-        data['Class'].values.astype('int32'),
-        test_size=0.10,
-        random_state=0,
-        shuffle=True
-    )
-    unvectorized_training_data = training_data
-    # Vectorize data using TFIDF and transform for PyTorch for scalability
-    word_vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1,2), max_features=50000, max_df=0.5, use_idf=True, norm='l2')
-    training_data = word_vectorizer.fit_transform(training_data)        # Transform texts to sparse matrix
-    training_data = training_data.todense()                             # Convert to dense matrix for Pytorch
-    print(type(training_data))
-    vocab_size = len(word_vectorizer.vocabulary_)
-    validation_data = word_vectorizer.transform(validation_data)
-    validation_data = validation_data.todense()
-    train_x_tensor = torch.from_numpy(np.array(training_data)).type(torch.FloatTensor)
-    train_y_tensor = torch.from_numpy(np.array(training_labels)).long()
-    validation_x_tensor = torch.from_numpy(np.array(validation_data)).type(torch.FloatTensor)
-    validation_y_tensor = torch.from_numpy(np.array(validation_labels)).long()
+# if __name__ == "__main__":
+#     # Get data, pre-process and split
+#     data = pd.read_csv("sample_data/amazon_cells_labelled.txt", delimiter='\t', header=None)
+#     data.columns = ['Sentence', 'Class']
+#     data['index'] = data.index                                          # Add new column index
+#     columns = ['index', 'Class', 'Sentence']
+#     data = preprocess_pandas(data, columns)                             # Pre-process
+#     training_data, validation_data, training_labels, validation_labels = train_test_split( # split the data into training, validation, and test splits
+#         data['Sentence'].values.astype('U'),
+#         data['Class'].values.astype('int32'),
+#         test_size=0.10,
+#         random_state=0,
+#         shuffle=True
+#     )
+#     unvectorized_training_data = training_data
+#     # Vectorize data using TFIDF and transform for PyTorch for scalability
+#     word_vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1,2), max_features=50000, max_df=0.5, use_idf=True, norm='l2')
+#     training_data = word_vectorizer.fit_transform(training_data)        # Transform texts to sparse matrix
+#     training_data = training_data.todense()                             # Convert to dense matrix for Pytorch
+#     print(type(training_data))
+#     vocab_size = len(word_vectorizer.vocabulary_)
+#     validation_data = word_vectorizer.transform(validation_data)
+#     validation_data = validation_data.todense()
+#     train_x_tensor = torch.from_numpy(np.array(training_data)).type(torch.FloatTensor)
+#     train_y_tensor = torch.from_numpy(np.array(training_labels)).long()
+#     validation_x_tensor = torch.from_numpy(np.array(validation_data)).type(torch.FloatTensor)
+#     validation_y_tensor = torch.from_numpy(np.array(validation_labels)).long()
 
 if __name__ == "__main__":
     # Get data, pre-process and split
